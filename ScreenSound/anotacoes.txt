@@ -1,0 +1,5 @@
+C# Persistencia de dados;
+
+- No Visual Studio, em exibir/Pesquisar objetos do SQL Server -> tem a possibilidade de gerenciar um BD SQL Server;
+
+- Durante o Projeto, para a conexão com o BD - instalar o pacote Microsoft.Data.SqlClient;
