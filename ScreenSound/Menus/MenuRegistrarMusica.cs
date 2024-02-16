@@ -5,13 +5,13 @@ namespace ScreenSound.Menus;
 
 internal class MenuRegistrarMusica : Menu
 {
-    public override void Executar(ArtistaDAL artistaDAL)
+    public override void Executar(DAL<Artista> musicaDAL)
     {
-        base.Executar(artistaDAL);
+        base.Executar(musicaDAL);
         ExibirTituloDaOpcao("Registro de músicas");
         Console.Write("Digite o artista cuja música deseja registrar: ");
         string nomeDoArtista = Console.ReadLine()!;
-        var artistaRecuperado = artistaDAL.BuscarPeloNome(nomeDoArtista);
+        var artistaRecuperado = musicaDAL.RecupearPor(n => n.Nome.Equals(nomeDoArtista));
         if (artistaRecuperado is not null)
         {
             Console.Write("Agora digite o título da música: ");
