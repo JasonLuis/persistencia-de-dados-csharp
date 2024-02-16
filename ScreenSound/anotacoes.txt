@@ -1,5 +1,7 @@
 C# Persistencia de dados;
 
+- As versões utilizadas nesses pacotes (Entity Framework) são a 7.0.14
+
 - No Visual Studio, em exibir/Pesquisar objetos do SQL Server -> tem a possibilidade de gerenciar um BD SQL Server;
 
 - Durante o Projeto, para a conexão com o BD - instalar o pacote Microsoft.Data.SqlClient;
@@ -10,3 +12,18 @@ PARTE 2 - ORM
 
 - Saindo do ADO.NET e indo para Entity Framework
 - Abrir o gerenciador de pacote do Nuget, instalar o Microsoft.EntitityFrameworkCore.SqlServer
+
+PARTE 4 - Migrations
+
+- Para usar as migrations é necessario a instalação de dois pacotes:
+	- Microsoft Entity Framework Core Design
+	- Microsoft Entity Framework Core Tools
+
+- Para criar uma migration:
+	- Abrir o console do gerenciador de pacotes;
+	- usar o comando Add-Migration nome_da_migration
+
+- Para atualizar o banco com um migration:
+	- Abrir o console do gerenciador de pacotes;
+	- Usar o comando Update-Migration nome_da_migration_criada;
+	- Ou Update-Database
