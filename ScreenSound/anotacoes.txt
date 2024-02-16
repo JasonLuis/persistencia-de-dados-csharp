@@ -27,3 +27,17 @@ PARTE 4 - Migrations
 	- Abrir o console do gerenciador de pacotes;
 	- Usar o comando Update-Migration nome_da_migration_criada;
 	- Ou Update-Database
+
+PARTE 5 - Relacionamentos
+
+	OBS: Nesta aula, continuamos trabalhando com as Migrations e conhecemos um novo conceito que é estabelecer o relacionamento entre duas tabelas. Além disso, fizemos as alterações necessárias no nosso menu utilizando o pacote Proxies para habilitar o carregamento lento das informações. Para aplicar isso no seu projeto, você pode seguir os seguintes passos:
+
+		- Adicionar uma propriedade Artista em Musica e Musica em Artista;
+
+		- Adicionar a migration que atualizará essas informações nas tabelas;
+
+		- Instalar e implementar o uso do pacote Proxies;
+
+		- Refatorar o menu para utilizar a tabela de músicas.
+
+	Instalado o pacote Microsoft.EntityFrameworkCore.Proxies
