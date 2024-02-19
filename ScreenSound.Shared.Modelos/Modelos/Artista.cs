@@ -4,6 +4,12 @@ public class Artista
 {
     public virtual ICollection<Musica> Musicas { get; set; } = new List<Musica>();
 
+    public Artista()
+    {
+        // Construtor sem parâmetros necessário para ORM
+    }
+
+
     public Artista(string nome, string bio)
     {
         Nome = nome;

@@ -1,0 +1,25 @@
+/* Curso Criando uma API WEB ASP NET CORE */
+
+- Na primeira parte do curso foi criado, na mesma solução, um projeto ASP.NET CORE Vazio com o nome de ScreenSound.API
+- Foi criado, também na mesma solução, um projeto Biblioteca de Classes chamado ScreenSound.Shared.Modelos;
+- Foi recortado a pasta Modelos do projeto ScreenSound e coloda em ScreenSound.Shared.Modelos;
+- Ao executar, percebeu-se vários alertas de erros no console, pois o projeto ScreenSound havia perdito a referência das classes modelos;
+- Para resolução do problema, era necessário ir no projeto ScreenSound, clicar com o botão direito em cima de Dependências,
+clicar em Adicionar Referência de Projeto..., e selecionar o projeto ScreenSound.Shared.Modelos e depois Ok.
+- Clicar em Solução com o botão direito e depois recompilar solução. 
+
+Obs: O projeto da aula anterior foi feito na versão dotnet 6.0, clicar em ScreenSound e alterar o XML para a TAG abaixo:
+	de: <TargetFramework>net6.0</TargetFramework>
+	para: <TargetFramework>net8.0</TargetFramework>
+
+Dessa maneira o projeto ScreenSound, do curso anterior, não perderá a referência das classes modelos.
+
+
+- Para organizar a estrutura do projeto, foi criado mais um projeto de Biblioteca de Classes chamada ScreenSound.Shared.Dados,
+nesse projeto foi inserido as pastas Banco e Migrations;
+- Nessa parte, foi necessaria copiar a tag itemgroup do arquivo XML, do projeto principal, com as dependências utilizadas, e colar no XML do projeto
+ScreenSound.Shared.Dados;
+- Como esse projeto vai ser compartilhado com outros, foi necessário a alteração de internal class para public;
+- Logo após, foi necessário adicionar o projeto ScreenSound.Shared.Modelo nas dependências ScreenSound.Shared.Dados e adicionar o projeto
+ScreenSound.Shared.Dados para o modelo ScreenSound;
+- Necessário recompilar o projeto;
