@@ -22,4 +22,26 @@ ScreenSound.Shared.Dados;
 - Como esse projeto vai ser compartilhado com outros, foi necessário a alteração de internal class para public;
 - Logo após, foi necessário adicionar o projeto ScreenSound.Shared.Modelo nas dependências ScreenSound.Shared.Dados e adicionar o projeto
 ScreenSound.Shared.Dados para o modelo ScreenSound;
-- Necessário recompilar o projeto;
+- Necessário recompilar o projeto
+
+
+- Instalando o Swagger;
+	- No XML do projeto ScreenSound.API, adicionar as seguintes tags:
+		<ItemGroup>
+			<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+			<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+			<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
+			<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
+		</ItemGroup>
+	- No arquivo Program.cs, adicionar:
+		builder.Services.AddEndpointsApiExplorer();
+		builder.Services.AddSwaggerGen();
+
+		- antes do app.run() adicionar 
+			app.UseSwagger();
+			app.UseSwaggerUI();
+
+	- Para o navegador abrir diretamente na pagina do Swagger:
+		- Properties/LaunchSettings.json;
+		- Adicionar em http e https a seguinte linha:
+			"launchUrl": "Swagger/index.html",
