@@ -22,10 +22,20 @@ builder.Services.AddSwaggerGen();
 #endregion
 
 
-/*Esse builder.Services.Configure() acima configura essa referência cíclica que vai acontecer no momento da conversão, da desserialização do objeto retornado, para o JSON.*/
+/*Esse builder.Services.Configure() acima configura essa referï¿½ncia cï¿½clica que vai acontecer no momento da conversï¿½o, da desserializaï¿½ï¿½o do objeto retornado, para o JSON.*/
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
-
+builder.Services.AddCors();
 var app = builder.Build();
+
+app.UseCors(options =>
+{
+    options.AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader();
+});
+
+// informa a aplicaï¿½ï¿½o web que exibirï¿½ arquivos estaticos;
+app.UseStaticFiles();
 
 app.AddEndPointsArtistas();
 app.AddEndPointMusicas();

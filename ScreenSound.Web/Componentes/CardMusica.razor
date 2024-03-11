@@ -1,0 +1,44 @@
+﻿@inject IDialogService DialogService
+
+<MudCard>
+    <MudCardMedia Image="images/cardArtista.png"></MudCardMedia>
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">@Musica!.Nome</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+         <MudText Typo="Typo.body2">Artista/Banda:@Musica!.NomeArtista</MudText>
+    </MudCardContent>
+    <MudCardActions>
+            <MudButton Color="Color.Warning"
+                       Variant="Variant.Outlined"
+                       Href=@($"/EditarMusica/{Musica!.Nome}")>
+                Detalhes
+            </MudButton>
+            <MudButton Class="ml-4" Color="Color.Error" Variant="Variant.Filled" OnClick="() => OpenDialogDelete(Musica)">
+                Deletar
+            </MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [Parameter]
+    public MusicaResponse? Musica { get; set; }
+
+    [Parameter]
+    public EventCallback<int> ValueId { get; set; }
+
+    private async Task OpenDialogDelete(MusicaResponse musicaResponse)
+    {
+        var options = new DialogOptions { NoHeader = false };
+        var parameters = new DialogParameters<DialogDelete<int>>();
+        parameters.Add(d => d.Value, musicaResponse.Id);
+        parameters.Add(d => d.title, $"Deseja excluir a música {musicaResponse.Nome}");
+
+        var reference = DialogService.Show<DialogDelete<int>>("Deletar Música", parameters, options);
+        await reference.GetReturnValueAsync<int>();
+        var result = await reference.Result;
+        await ValueId.InvokeAsync(Convert.ToInt32(result.Data));
+    }
+}

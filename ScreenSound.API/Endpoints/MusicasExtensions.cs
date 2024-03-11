@@ -31,6 +31,21 @@ namespace ScreenSound.API.Endpoints
                 var musicaResponse = EntityToResponse(musica);
 
                 return Results.Ok(musicaResponse);
+            }); 
+
+            app.MapGet("/Musicas/Artista/{id}", ([FromServices] DAL<Musica> dal, int id) =>
+            {
+                var musicas = dal.ListarPor(m => m.ArtistaId == id);
+
+                if (musicas is null)
+                {
+                    return Results.NoContent();
+                }
+
+                var musicasResponse = EntityListToResponseList(musicas);
+
+
+                return Results.Ok(musicasResponse);
             });
 
             app.MapPost("/Musicas", ([FromServices] DAL<Musica> dal,
@@ -110,7 +125,7 @@ namespace ScreenSound.API.Endpoints
 
         private static MusicaResponse EntityToResponse(Musica musica)
         {
-            return new MusicaResponse(musica.Id, musica.Nome!, musica.Artista?.Nome);
+            return new MusicaResponse(musica.Id, musica.Nome!, musica.Artista?.Nome, musica.AnoLancamento);
         }
     }
 }

@@ -1,5 +1,6 @@
-server: screensoundserverjason -> excluído
+server: screensoundserverjason
 
-jason -> excluído
-Screensound@123 -> excluído
-Screensound@123 -> excluído
+Logon do administrador do servidor:
+jason
+Screensound@123
+Screensound@123

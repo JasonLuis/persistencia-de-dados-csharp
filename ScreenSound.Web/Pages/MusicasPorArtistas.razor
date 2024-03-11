@@ -1,0 +1,108 @@
+﻿@page "/MusicasPorArtistas"
+@inject MusicasAPI musicasAPI;
+@inject ArtistasAPI artistasAPI;
+
+<MudStack Class="mt-4 mb-4" Row="true" Justify="Justify.SpaceBetween">    
+    <MudText Class="mb-4" Typo="Typo.h4">Músicas cadastrados</MudText>
+    
+    <MudPagination Count="@TotalPaginas" SelectedChanged="PaginaMudou">
+    </MudPagination>
+</MudStack>
+<MudStack Class="mt-4 mb-4" Row="true" Justify="Justify.SpaceBetween">
+    <MudSelect Style="max-width: 250px;" T="ArtistaResponse" Label="Artistas"
+               Variant="Variant.Filled" ValueChanged="ArtistaSelecionado" AnchorOrigin="Origin.BottomCenter"
+               Required="true"
+               RequiredError="Campo obrigatório.">
+               @if (Artistas is not null)
+                {
+                    @foreach (var artista in Artistas)
+                    {
+                        <MudSelectItem Value="artista" />
+                    }
+                }
+    </MudSelect>
+</MudStack>
+
+@if (MusicaPorPaginas is not null)
+{
+    <MudGrid>
+        @foreach (var musica in MusicaPorPaginas)
+        {
+            <MudItem xs="3">
+                <CardMusica Musica="musica" ValueId="id => DeletarMusica(id)" />
+            </MudItem>
+        }
+    </MudGrid>
+}
+
+@code {
+    private ICollection<MusicaResponse>? Musicas;
+    private ICollection<MusicaResponse>? MusicaPorArtista;
+    private ICollection<ArtistaResponse>? Artistas;
+    private int Tamanho = 8;
+    private int TotalItens;
+    private int TotalPaginas;
+    private ICollection<MusicaResponse>? MusicaPorPaginas;
+    private ArtistaResponse? ArtistaDaMusica { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await this.CarregarMusicas();
+        Artistas = await this.CarregarArtistas();
+    }
+
+    private void PaginaMudou(int pageNumber)
+    {
+        var indice = pageNumber - 1; 
+        MusicaPorPaginas = MusicaPorArtista!
+            .Skip(Tamanho * indice)
+            .Take(Tamanho)
+            .ToList();
+    }
+
+    private async Task ArtistaSelecionado(ArtistaResponse artista)
+    {
+        ArtistaDaMusica = artista;
+        if (ArtistaDaMusica is not null)
+        {
+          await this.BuscarPorArtistas(ArtistaDaMusica);
+        }
+    }
+
+    private async Task BuscarPorArtistas(ArtistaResponse artista)
+    {
+        Musicas = await musicasAPI.GetMusicaPorArtistaAsync(artista.Id);
+        if (Musicas is not null)
+        {
+            MusicaPorArtista = Musicas.OrderByDescending(m => m.NomeArtista).ToList();
+            TotalItens = MusicaPorArtista.Count();
+            TotalPaginas = Convert.ToInt32(Math.Ceiling((TotalItens * 1.0) / Tamanho));
+            this.PaginaMudou(1);
+        }
+    }
+
+    private async Task CarregarMusicas()
+    {
+        Musicas = await musicasAPI.GetMusicasAsync();
+
+        if (Musicas is not null)
+        {
+            MusicaPorArtista = Musicas.OrderByDescending(m => m.NomeArtista).ToList();
+            TotalItens = MusicaPorArtista.Count();
+            TotalPaginas = Convert.ToInt32(Math.Ceiling((TotalItens * 1.0) / Tamanho));
+            this.PaginaMudou(1);
+        }
+    }
+
+    private async Task<ICollection<ArtistaResponse>?> CarregarArtistas()
+    {
+        return await artistasAPI.GetArtistasAsync();
+    }
+
+    private async Task DeletarMusica(int id)
+    {
+        await musicasAPI.DeleteMusicaAsync(id);
+        await this.CarregarMusicas();
+    }
+}
