@@ -1,5 +1,109 @@
-﻿<h3>MusicasPorGenero</h3>
+﻿@page "/MusicasPorGenero"
+@inject MusicasAPI musicasAPI;
+@inject GenerosAPI generosAPI;
+
+<MudStack Class="mt-4 mb-4" Row="true" Justify="Justify.SpaceBetween">
+    <MudText Class="mb-4" Typo="Typo.h4">Músicas cadastrados</MudText>
+
+    <MudPagination Count="@TotalPaginas" SelectedChanged="PaginaMudou">
+    </MudPagination>
+</MudStack>
+<MudStack Class="mt-4 mb-4" Row="true" Justify="Justify.SpaceBetween">
+    <MudSelect Style="max-width: 250px;" T="GeneroResponse" Label="Generos"
+               Variant="Variant.Filled" ValueChanged="GeneroSelecionado" AnchorOrigin="Origin.BottomCenter"
+               Required="true"
+               RequiredError="Campo obrigatório.">
+        @if (Generos is not null)
+        {
+            @foreach (var genero in Generos)
+            {
+                <MudSelectItem Value="genero" />
+            }
+        }
+    </MudSelect>
+</MudStack>
+
+@if (MusicaPorPaginas is not null)
+{
+    <MudGrid>
+        @foreach (var musica in MusicaPorPaginas)
+        {
+            <MudItem xs="3">
+                <CardMusica Musica="musica" ValueId="id => DeletarMusica(id)" />
+            </MudItem>
+        }
+    </MudGrid>
+}
 
 @code {
+    private ICollection<MusicaResponse>? Musicas;
+    private ICollection<MusicaResponse>? MusicaPorGenero;
+    private ICollection<GeneroResponse>? Generos;
+    private int Tamanho = 8;
+    private int TotalItens;
+    private int TotalPaginas;
+    private ICollection<MusicaResponse>? MusicaPorPaginas;
+    private GeneroResponse? GeneroDaMusica { get; set; }
 
+
+    protected override async Task OnInitializedAsync()
+    {
+        await this.CarregarMusicas();
+        Generos = await this.CarregarGeneros();
+    }
+
+    private void PaginaMudou(int pageNumber)
+    {
+        var indice = pageNumber - 1;
+        MusicaPorPaginas = MusicaPorGenero!
+            .Skip(Tamanho * indice)
+            .Take(Tamanho)
+            .ToList();
+    }
+
+    private async Task GeneroSelecionado(GeneroResponse genero)
+    {
+        GeneroDaMusica = genero;
+        if (GeneroDaMusica is not null)
+        {
+            await this.BuscarPorArtistas(GeneroDaMusica);
+        }
+    }
+
+    private async Task BuscarPorArtistas(GeneroResponse genero)
+    {
+
+        MusicaPorGenero = Musicas!.Where(musica => musica.Generos.Any(g => g.Nome == genero.Nome)).ToList();
+        if (MusicaPorGenero is not null)
+        {
+            MusicaPorGenero = MusicaPorGenero.OrderByDescending(m => m.NomeArtista).ToList();
+            TotalItens = MusicaPorGenero.Count();
+            TotalPaginas = Convert.ToInt32(Math.Ceiling((TotalItens * 1.0) / Tamanho));
+            this.PaginaMudou(1);
+        }
+    }
+
+    private async Task CarregarMusicas()
+    {
+        Musicas = await musicasAPI.GetMusicasAsync();
+
+        if (Musicas is not null)
+        {
+            MusicaPorGenero = Musicas.OrderByDescending(m => m.NomeArtista).ToList();
+            TotalItens = MusicaPorGenero.Count();
+            TotalPaginas = Convert.ToInt32(Math.Ceiling((TotalItens * 1.0) / Tamanho));
+            this.PaginaMudou(1);
+        }
+    }
+
+    private async Task<ICollection<GeneroResponse>?> CarregarGeneros()
+    {
+        return await generosAPI.GetGenerosAsync();
+    }
+
+    private async Task DeletarMusica(int id)
+    {
+        await musicasAPI.DeleteMusicaAsync(id);
+        await this.CarregarMusicas();
+    }
 }
