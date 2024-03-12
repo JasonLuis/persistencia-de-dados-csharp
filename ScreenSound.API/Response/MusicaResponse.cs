@@ -1,4 +1,6 @@
-﻿namespace ScreenSound.API.Response;
+﻿using ScreenSound.API.Requests;
 
-public record MusicaResponse(int Id, string Nome, string? NomeArtista, int? AnoLancamento);
+namespace ScreenSound.API.Response;
+
+public record MusicaResponse(int Id, string Nome, string? NomeArtista, int? AnoLancamento, ICollection<GeneroResponse> Generos = null);
 
