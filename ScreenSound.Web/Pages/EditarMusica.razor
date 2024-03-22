@@ -65,7 +65,8 @@
             </MudButton>
             <MudButton Variant="Variant.Filled"
                        Color="Color.Info"
-                       Class="ml-3">
+                       Class="ml-3"
+                       OnClick="Retornar">
                 Voltar
             </MudButton>
         </div>
@@ -144,6 +145,11 @@
         var musicaRequestEdit = new MusicaRequestEdit(Musica!.Id,nome!, ArtistaDaMusica!.Id,
         anoLancamento, GenerosRequest);
         await musicasAPI.UpdateMusicaAsync(musicaRequestEdit);
+        navigationManager.NavigateTo("/MusicasPorArtistas");
+    }
+
+    private void Retornar()
+    {
         navigationManager.NavigateTo("/MusicasPorArtistas");
     }
 }

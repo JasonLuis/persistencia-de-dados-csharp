@@ -14,7 +14,7 @@ namespace ScreenSound.API.Endpoints
             app.MapGet("/Musicas", ([FromServices] DAL<Musica> dal) =>
             {
                 var musicas = EntityListToResponseList(dal.Listar());
-                
+
 
                 return Results.Ok(musicas);
             });
@@ -31,7 +31,7 @@ namespace ScreenSound.API.Endpoints
                 var musicaResponse = EntityToResponse(musica);
 
                 return Results.Ok(musicaResponse);
-            }); 
+            });
 
             app.MapGet("/Musicas/Artista/{id}", ([FromServices] DAL<Musica> dal, int id) =>
             {
@@ -56,7 +56,7 @@ namespace ScreenSound.API.Endpoints
                 {
                     ArtistaId = musicaRequest.ArtistaId,
                     AnoLancamento = musicaRequest.AnoLancamento,
-                    Generos = musicaRequest.Generos is not null ? 
+                    Generos = musicaRequest.Generos is not null ?
                     GeneroRequestConverter(musicaRequest.Generos, dalGenero) :
                     new List<Genero>()
                 };
@@ -64,7 +64,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.Ok();
             });
 
-            app.MapPut("/Musicas", ([FromServices] DAL<Musica> dal, [FromBody] MusicaRequestEdit musicaRequestEdit) =>
+            app.MapPut("/Musicas", ([FromServices] DAL<Musica> dal, [FromServices] DAL<Genero> dalGenero, [FromBody] MusicaRequestEdit musicaRequestEdit) =>
             {
                 var musicaAtualizar = dal.RecuperarPor(m => m.Id == musicaRequestEdit.Id);
 
@@ -76,13 +76,16 @@ namespace ScreenSound.API.Endpoints
                 musicaAtualizar.Nome = musicaRequestEdit.Nome;
                 musicaAtualizar.AnoLancamento = musicaRequestEdit.AnoLancamento;
                 musicaAtualizar.ArtistaId = musicaRequestEdit.ArtistaId;
+                musicaAtualizar.Generos = musicaRequestEdit.Generos is not null ?
+                GeneroRequestConverter(musicaRequestEdit.Generos, dalGenero) : new List<Genero>();
 
                 dal.Atualizar(musicaAtualizar);
                 return Results.Ok();
             });
             #endregion
 
-            app.MapDelete("/Musicas/{id}", ([FromServices] DAL<Musica> dal, int id) => {
+            app.MapDelete("/Musicas/{id}", ([FromServices] DAL<Musica> dal, int id) =>
+            {
                 var musica = dal.RecuperarPor(m => m.Id == id);
                 if (musica is null)
                 {

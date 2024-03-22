@@ -61,19 +61,18 @@
             .ToList();
     }
 
-    private async Task GeneroSelecionado(GeneroResponse genero)
+    private void GeneroSelecionado(GeneroResponse genero)
     {
         GeneroDaMusica = genero;
         if (GeneroDaMusica is not null)
         {
-            await this.BuscarPorArtistas(GeneroDaMusica);
+            this.BuscarPorArtistas(GeneroDaMusica);
         }
     }
 
-    private async Task BuscarPorArtistas(GeneroResponse genero)
+    private void BuscarPorArtistas(GeneroResponse genero)
     {
-
-        MusicaPorGenero = Musicas!.Where(musica => musica.Generos.Any(g => g.Nome == genero.Nome)).ToList();
+        MusicaPorGenero = Musicas!.Where(musica => musica.Generos.Any(g => g.Nome.ToUpper() == genero.Nome.ToUpper())).ToList();
         if (MusicaPorGenero is not null)
         {
             MusicaPorGenero = MusicaPorGenero.OrderByDescending(m => m.NomeArtista).ToList();

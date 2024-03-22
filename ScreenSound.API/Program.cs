@@ -5,6 +5,15 @@ using ScreenSound.Modelos;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Após criar o uma CONFIGURAÇÂO DE APP no Azure DevOps e adicionar o a biblioteca AppConfiguration nos pacotes do projeto, adicionar essa linha de código
+builder.Host.ConfigureAppConfiguration(config =>
+{
+    var settings = config.Build();
+    // A string adicionada nesse campo é encontrada em COnfiguração de Aplicativos - NOME-DO-RECURSO - Chave de Acesso
+    // Copiar Cadeia de conexão
+    config.AddAzureAppConfiguration("Endpoint=https://screensound-configurationjc.azconfig.io;Id=GGcL;Secret=AJJTelBdbfTTbmBVS+BCcs7uMSvPOJuRDoYv46NE4Og=");
+});
+
 builder.Services.AddDbContext<ScreenSoundContext>((options) =>
 {
     options

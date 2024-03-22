@@ -21,7 +21,7 @@
     },
     "resourceName": {
       "type": "string",
-      "defaultValue": "screensoundjs-api",
+      "defaultValue": "screensound-webapp-jc",
       "metadata": {
         "description": "Name of the main resource to be created by this template."
       }

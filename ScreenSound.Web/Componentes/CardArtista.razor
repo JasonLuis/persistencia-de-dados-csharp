@@ -1,4 +1,5 @@
 ﻿@inject IDialogService DialogService
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
 
 <MudCard>
     <MudCardMedia Image="@ImageComputed"></MudCardMedia>
@@ -20,7 +21,7 @@
     </MudCardActions>
 </MudCard>
 
-    @code {
+@code {
     [Parameter]
     public ArtistaResponse? Artista { get; set; }
 
@@ -30,8 +31,8 @@
     public EventCallback<int> ValueId { get; set; }
 
 
-    public string ImageComputed => Artista!.FotoPerfil!.Contains("Foto") ? $"https://localhost:7229/{Artista!.FotoPerfil}" : "images/cardArtista.png";
-
+    private string apiUrl => Configuration!.GetSection("APIServer:Url").Value;
+    private string ImageComputed => Artista!.FotoPerfil!.Contains("Foto") ? $"{apiUrl}/{Artista!.FotoPerfil}" : "images/cardArtista.png";
 
     private async Task OpenDialog(ArtistaResponse artistaResponse)
     {
