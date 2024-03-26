@@ -1,0 +1,30 @@
+Asp Dotnet autenticacao Autorizacao APIS aplicacoes Web
+
+- Em Program.cs do Projeto ScreenSound.API, inserir a seguinte linha:
+	builder.Services.AddCors(
+    options => options.AddPolicy(
+        "wasm",
+        policy => policy.WithOrigins([builder.Configuration["BackendUrl"] ?? "https://localhost:7089",
+            builder.Configuration["FrontendUrl"] ?? "https://localhost:7015"])
+            .AllowAnyMethod()
+            .SetIsOriginAllowed(pol => true)
+            .AllowAnyHeader()
+            .AllowCredentials()));
+
+    var app = builder.Build();
+
+    app.UseCors("wasm");
+
+- Em ScreenSoundContext do projeto ScreenSound.Shared.Dados, inserir a seguinte linha no metodo OnModelCreating:
+    base.OnModelCreating(modelBuilder);
+
+- Clicando no projeto ScreenSound.Shared.Dados no Gerenciador de Soluções, adicionar a seguinte linha no item group para a instalação do Identity:
+	<PackageReference Include="Microsoft.AspnetCore.Identity.EntityFrameworkCore" Version="7.0.13" />
+
+- Criar um pasta Modelos ScreenSound.Shared.Dados;
+- Na pasta Modelos, criar dois arquivos PerFilDeAcesso: IdentityRole<int> e PessoaComAcesso: IdentityUser<int>
+
+- Em ScreenSoundContext, a classe trocar a extensão da classe de DbContext para IdentityDbContext<PessoaComAcesso, PerfilDeAcesso, int> (Inserirndo no parametro, as duas classes criadas anteriormente);
+
+- Adicionar a Migration -> AddMigration Nome_Migration;
+- Atualizar o bd -> Update-Database

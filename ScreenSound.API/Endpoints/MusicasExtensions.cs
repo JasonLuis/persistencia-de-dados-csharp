@@ -10,8 +10,13 @@ namespace ScreenSound.API.Endpoints
     {
         public static void AddEndPointMusicas(this WebApplication app)
         {
+
+            var groupBuilder = app.MapGroup("musicas")
+                .RequireAuthorization()
+                .WithTags("Musicas");
+
             #region Endpoint Músicas
-            app.MapGet("/Musicas", ([FromServices] DAL<Musica> dal) =>
+            groupBuilder.MapGet("", ([FromServices] DAL<Musica> dal) =>
             {
                 var musicas = EntityListToResponseList(dal.Listar());
 
@@ -19,7 +24,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.Ok(musicas);
             });
 
-            app.MapGet("/Musicas/{nome}", ([FromServices] DAL<Musica> dal, string nome) =>
+            groupBuilder.MapGet("{nome}", ([FromServices] DAL<Musica> dal, string nome) =>
             {
                 var musica = dal.RecuperarPor(m => m.Nome == nome);
 
@@ -33,7 +38,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.Ok(musicaResponse);
             });
 
-            app.MapGet("/Musicas/Artista/{id}", ([FromServices] DAL<Musica> dal, int id) =>
+            groupBuilder.MapGet("Artista/{id}", ([FromServices] DAL<Musica> dal, int id) =>
             {
                 var musicas = dal.ListarPor(m => m.ArtistaId == id);
 
@@ -48,7 +53,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.Ok(musicasResponse);
             });
 
-            app.MapPost("/Musicas", ([FromServices] DAL<Musica> dal,
+            groupBuilder.MapPost("", ([FromServices] DAL<Musica> dal,
                 [FromServices] DAL<Genero> dalGenero,
                 [FromBody] MusicaRequest musicaRequest) =>
             {
@@ -64,7 +69,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.Ok();
             });
 
-            app.MapPut("/Musicas", ([FromServices] DAL<Musica> dal, [FromServices] DAL<Genero> dalGenero, [FromBody] MusicaRequestEdit musicaRequestEdit) =>
+            groupBuilder.MapPut("", ([FromServices] DAL<Musica> dal, [FromServices] DAL<Genero> dalGenero, [FromBody] MusicaRequestEdit musicaRequestEdit) =>
             {
                 var musicaAtualizar = dal.RecuperarPor(m => m.Id == musicaRequestEdit.Id);
 
@@ -84,7 +89,7 @@ namespace ScreenSound.API.Endpoints
             });
             #endregion
 
-            app.MapDelete("/Musicas/{id}", ([FromServices] DAL<Musica> dal, int id) =>
+            groupBuilder.MapDelete("{id}", ([FromServices] DAL<Musica> dal, int id) =>
             {
                 var musica = dal.RecuperarPor(m => m.Id == id);
                 if (musica is null)

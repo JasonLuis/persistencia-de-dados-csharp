@@ -10,15 +10,19 @@ namespace ScreenSound.API.Endpoints
     {
         public static void AddEndPointsArtistas(this WebApplication app)
         {
+            var groupBuilder = app.MapGroup("artistas")
+                .RequireAuthorization()
+                .WithTags("Artistas");
+
             #region Endpoint Artistas
-            app.MapGet("/Artistas", ([FromServices] DAL<Artista> dal) =>
+            groupBuilder.MapGet("", ([FromServices] DAL<Artista> dal) =>
             {
                 var artistas = EntityListToResponseList(dal.Listar());
 
                 return Results.Ok(artistas);
             });
 
-            app.MapGet("/Artistas/{nome}", ([FromServices] DAL<Artista> dal, string nome) =>
+            groupBuilder.MapGet("{nome}", ([FromServices] DAL<Artista> dal, string nome) =>
             {
                 var recuperarArtista = dal.RecuperarPor(a => a.Nome.ToUpper().Equals(nome.ToUpper()));
                 if (recuperarArtista is null)
@@ -32,7 +36,7 @@ namespace ScreenSound.API.Endpoints
             });
 
 
-            app.MapPost("/Artistas", async ([FromServices] IHostEnvironment env,[FromServices] DAL<Artista> dal, [FromBody] ArtistaRequest artistaRequest) =>
+            groupBuilder.MapPost("", async ([FromServices] IHostEnvironment env,[FromServices] DAL<Artista> dal, [FromBody] ArtistaRequest artistaRequest) =>
             {
                 string imagemArtista = "";
                 if (artistaRequest.fotoPerfil is not null)
@@ -53,7 +57,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.Ok(artista);
             });
 
-            app.MapDelete("/Artistas/{id}", ([FromServices] DAL<Artista> dal, int id) =>
+            groupBuilder.MapDelete("/Artistas/{id}", ([FromServices] DAL<Artista> dal, int id) =>
             {
                 var artista = dal.RecuperarPor(a => a.Id == id);
 
@@ -66,7 +70,7 @@ namespace ScreenSound.API.Endpoints
                 return Results.NoContent();
             });
 
-            app.MapPut("/Artistas", async ([FromServices] IHostEnvironment env, [FromServices] DAL<Artista> dal, [FromBody] ArtistaRequestEdit artistaRequestEdit) => {
+            groupBuilder.MapPut("/Artistas", async ([FromServices] IHostEnvironment env, [FromServices] DAL<Artista> dal, [FromBody] ArtistaRequestEdit artistaRequestEdit) => {
                 var artistaAtualizar = dal.RecuperarPor(a => a.Id == artistaRequestEdit.id);
 
                 if (artistaAtualizar is null)

@@ -10,14 +10,18 @@ public static class GenerosExtensions
 {
     public static void AddEndPointGeneros(this WebApplication app)
     {
+        var groupBuilder = app.MapGroup("generos")
+                .RequireAuthorization()
+                .WithTags("Generos");
+
         #region Endpoint Generos
-        app.MapGet("/Generos", ([FromServices] DAL<Genero> dal) =>
+        groupBuilder.MapGet("", ([FromServices] DAL<Genero> dal) =>
         {
             var generos = EntityListToReponseList(dal.Listar());
             return generos;
         });
 
-        app.MapGet("/Generos/{nome}", ([FromServices] DAL < Genero > dal, string nome) =>
+        groupBuilder.MapGet("{nome}", ([FromServices] DAL < Genero > dal, string nome) =>
         {
             var recuperarGenero = dal.RecuperarPor(g => g.Nome.ToUpper().Equals(nome.ToUpper()));
             if (recuperarGenero is null)
@@ -30,7 +34,7 @@ public static class GenerosExtensions
             return Results.Ok(generoResponse);
         });
 
-        app.MapPost("/Generos", ([FromServices] DAL<Genero> dal, [FromBody] GeneroRequest generoRequest) =>
+        groupBuilder.MapPost("", ([FromServices] DAL<Genero> dal, [FromBody] GeneroRequest generoRequest) =>
         {
             var genero = new Genero(generoRequest.Nome) { Descricao = generoRequest.Descricao};
             dal.Adicionar(genero);
@@ -39,7 +43,7 @@ public static class GenerosExtensions
         });
 
 
-        app.MapPut("/Generos", ([FromServices] DAL<Genero> dal, [FromBody] GeneroRequestEdit generoRequestEdit) =>
+        groupBuilder.MapPut("", ([FromServices] DAL<Genero> dal, [FromBody] GeneroRequestEdit generoRequestEdit) =>
         {
             var genero = dal.RecuperarPor(g => g.Id == generoRequestEdit.Id);
             if (genero is null)
@@ -53,7 +57,7 @@ public static class GenerosExtensions
             return Results.Ok(generoRequestEdit);
         });
 
-        app.MapDelete("/Delete/{id}", ([FromServices] DAL<Genero> dal, int id) =>
+        groupBuilder.MapDelete("{id}", ([FromServices] DAL<Genero> dal, int id) =>
         {
             var genero = dal.RecuperarPor(g => g.Id == id);
 
