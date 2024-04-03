@@ -28,3 +28,12 @@ Asp Dotnet autenticacao Autorizacao APIS aplicacoes Web
 
 - Adicionar a Migration -> AddMigration Nome_Migration;
 - Atualizar o bd -> Update-Database
+
+
+
+/*Como manter o estado da aplicação e o propagar por toda a aplicação Blazor?*/
+
+- No projeto ScreenSound.web, clicar com o botão direito do mause, editar arquivo do projeto, e adicionar o seguinte pacote: 
+
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.0" /> 
+

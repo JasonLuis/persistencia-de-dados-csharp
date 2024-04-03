@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ScreenSound.API.Endpoints;
 using ScreenSound.Banco;
@@ -27,6 +29,7 @@ builder.Services
     .AddIdentityApiEndpoints<PessoaComAcesso>()
     .AddEntityFrameworkStores<ScreenSoundContext>();
 
+// addiciona serviço de autorização para os endpoints
 builder.Services.AddAuthorization();
 
 builder.Services.AddTransient<DAL<Artista>>();
@@ -70,6 +73,7 @@ app.UseCors("wasm");
 
 // informa a aplica��o web que exibir� arquivos estaticos;
 app.UseStaticFiles();
+// addiciona serviço de autorização para os endpoints
 app.UseAuthorization();
 
 app.AddEndPointsArtistas();
@@ -77,6 +81,12 @@ app.AddEndPointMusicas();
 app.AddEndPointGeneros();
 
 app.MapGroup("auth").MapIdentityApi<PessoaComAcesso>().WithTags("Autorização");
+
+app.MapPost("auth/logout", async ([FromServices] SignInManager<PessoaComAcesso> signInManager) =>
+{
+    await signInManager.SignOutAsync();
+    return Results.Ok();
+}).RequireAuthorization().WithTags("Autorização");
 
 #region Swagger
 app.UseSwagger();

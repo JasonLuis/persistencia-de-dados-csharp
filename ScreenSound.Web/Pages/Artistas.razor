@@ -1,7 +1,10 @@
 ﻿@page "/Artistas"
+@using Microsoft.AspNetCore.Authorization
 @inject ArtistasAPI artistasAPI
 @inject IDialogService DialogService
 
+
+<PageTitle>Artistas</PageTitle>
 
 <MudStack Class="mt-4 mb-4" Row="true" Justify="Justify.SpaceBetween">
     <MudText Class="mb-4" Typo="Typo.h4">Artistas cadastrados</MudText>
@@ -10,14 +13,22 @@
 </MudStack>
 @if (artistasPorPaginas is not null)
 {
-    <MudGrid>
-        @foreach (var artista in artistasPorPaginas)
-        {
-            <MudItem xs="3">
-                <CardArtista Artista="artista" ValueId="id => DeletarArtista(id)" />
-            </MudItem>
-        }
-    </MudGrid>
+    if (!_loading)
+    {
+        <MudSkeleton />
+        <MudSkeleton Animation="Animation.False" />
+        <MudSkeleton Animation="Animation.Wave" />
+    } else
+    {
+        <MudGrid>
+            @foreach (var artista in artistasPorPaginas)
+            {
+                <MudItem xs="3">
+                    <CardArtista Artista="artista" ValueId="id => DeletarArtista(id)" />
+                </MudItem>
+            }
+        </MudGrid>
+    }
 }
 
 
@@ -28,10 +39,13 @@
     private int totalItens;
     private int totalPaginas;
     private ICollection<ArtistaResponse>? artistasPorPaginas;
+    private bool _loading = false;
 
     protected override async Task OnInitializedAsync()
     {
+        _loading = false;
         await this.CarregarArtistars();
+        _loading = true;
     }
 
     private void PaginaMudou(int pageNumber)
