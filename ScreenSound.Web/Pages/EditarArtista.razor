@@ -40,28 +40,35 @@
             </ButtonTemplate>
         </MudFileUpload>
         <div class="d-flex align-center justify-end mt-4">
-            <MudButton Variant="Variant.Filled"
-                       @onclick="Editar"
-                       Color="Color.Success"
-                       Class="ml-auto">
-                Salvar Alterações
-            </MudButton>
-            <MudButton Variant="Variant.Filled"
-                       @onclick="Retornar"
-                       Color="Color.Primary"
-                       Class="ml-2">
-                Voltar
-            </MudButton>
+            <MudRating @bind-SelectedValue="Classificacao"
+                       @onclick="AvaliarArtista" />
+            <div>
+                <MudButton Variant="Variant.Filled"
+                           @onclick="Editar"
+                           Color="Color.Success"
+                           Class="ml-auto">
+                    Salvar Alterações
+                </MudButton>
+                <MudButton Variant="Variant.Filled"
+                           @onclick="Retornar"
+                           Color="Color.Primary"
+                           Class="ml-2">
+                    Voltar
+                </MudButton>
+            </div>
         </div>
 
     </MudForm>
 </MudPaper>
 
 @code {
-    private string? nome;
-    private string? biografia;
     [Parameter]
     public string? NomeArtista { get; set; }
+
+    
+    private string? nome;
+    private string? biografia;
+    public int Classificacao { get; set; }
 
     public ArtistaResponse? Artista { get; set; }
 
@@ -78,7 +85,7 @@
     private async Task Editar()
     {
 
-        string foto = Artista.FotoPerfil;
+        string foto = Artista!.FotoPerfil!;
         if (fotoPerfil is not null)
         {
             foto = fotoPerfil;
@@ -115,5 +122,10 @@
 
         fileImage = $"data:{format};base64,{imageUpload}";
         fotoPerfil = imageUpload;
+    }
+
+    private async Task AvaliarArtista()
+    {
+        await artistasAPI.AvaliaArtistaAsync(Artista!.Id, Classificacao);
     }
 }
