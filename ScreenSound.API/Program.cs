@@ -94,3 +94,5 @@ app.UseSwagger();
 app.UseSwaggerUI();
 #endregion
 app.Run(); 
+
+public partial class Program;

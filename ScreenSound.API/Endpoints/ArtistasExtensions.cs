@@ -81,6 +81,11 @@ namespace ScreenSound.API.Endpoints
                     return Results.NotFound();
                 }
 
+                artistaAtualizar.Nome = artistaRequestEdit.nome;
+                artistaAtualizar.Bio = artistaRequestEdit.bio;
+
+                
+
                 if (artistaRequestEdit.fotoPerfil is not null)
                 {
                     var nome = artistaRequestEdit.nome.Trim();
@@ -93,10 +98,6 @@ namespace ScreenSound.API.Endpoints
                     await ms.CopyToAsync(fs);
                     artistaAtualizar.FotoPerfil = $"/FotosPerfil/{imagemArtista}";
                 }
-
-
-                artistaAtualizar.Nome = artistaRequestEdit.nome;
-                artistaAtualizar.Bio = artistaRequestEdit.bio;
 
                 dal.Atualizar(artistaAtualizar);
 
